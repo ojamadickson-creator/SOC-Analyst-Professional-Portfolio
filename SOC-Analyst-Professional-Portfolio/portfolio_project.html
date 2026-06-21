@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Network Perimeter Breach Investigation - Initech Corp</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* === RESET & BASE === */
+body { margin: 0; padding: 0; font-family: 'Inter', Georgia, serif; font-size: 10.5pt; line-height: 1.65; color: #333; text-align: justify; text-align-last: left; }
+
+/* === PAGE SETUP === */
+@page { size: A4; margin: 2.2cm 2cm; @top-center { content: string(doctitle); font-size: 8pt; color: #888; } @bottom-center { content: counter(page); font-size: 9pt; } }
+@page :first { margin: 0; @top-center { content: none; } @bottom-center { content: none; } }
+@page cover { @top-center { content: none; } @bottom-center { content: none; } }
+@page toc { @top-center { content: none; } @bottom-center { content: none; } }
+body { string-set: doctitle ""; }
+h1 { string-set: doctitle content(); }
+
+/* === COVER PAGE === */
+.cover { width: 210mm; height: 297mm; margin: 0; position: relative; overflow: hidden; page: cover; page-break-after: always; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #e94560 100%); }
+.cover::before { content: ''; position: absolute; top: -80px; right: -80px; width: 350px; height: 350px; border: 3px solid rgba(233,69,96,0.25); border-radius: 50%; }
+.cover::after { content: ''; position: absolute; bottom: 60px; left: -40px; width: 250px; height: 250px; border: 2px solid rgba(255,255,255,0.08); border-radius: 50%; }
+.cover-deco1 { position: absolute; top: 120px; left: 40px; width: 80px; height: 80px; background: rgba(233,69,96,0.12); transform: rotate(45deg); }
+.cover-deco2 { position: absolute; bottom: 200px; right: 60px; width: 120px; height: 4px; background: linear-gradient(90deg, #e94560, transparent); }
+.cover-deco3 { position: absolute; top: 250px; right: 100px; width: 6px; height: 100px; background: rgba(255,255,255,0.1); }
+.cover-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 80%; z-index: 10; color: white; }
+.cover-tag { display: inline-block; font-size: 10pt; letter-spacing: 3px; text-transform: uppercase; color: #e94560; border: 1px solid rgba(233,69,96,0.5); padding: 6px 20px; margin-bottom: 30px; }
+.cover-title { font-size: 32pt; font-weight: 700; color: white; margin: 0 0 15px 0; line-height: 1.2; }
+.cover-subtitle { font-size: 14pt; font-weight: 400; color: rgba(255,255,255,0.75); margin-bottom: 60px; }
+.cover-meta { font-size: 11pt; color: rgba(255,255,255,0.6); line-height: 2.2; }
+.cover-meta strong { color: rgba(255,255,255,0.9); }
+.cover-bottom { position: absolute; bottom: 50px; left: 0; right: 0; text-align: center; font-size: 9pt; color: rgba(255,255,255,0.35); letter-spacing: 2px; }
+
+/* === TOC === */
+.toc-page { page: toc; page-break-after: always; padding-top: 2cm; }
+.toc-title { font-size: 22pt; font-weight: 700; color: #1a1a2e; margin-bottom: 1cm; border-bottom: 3px solid #e94560; padding-bottom: 10px; }
+.toc { list-style: none; padding: 0; margin: 0; }
+.toc li { margin: 0; padding: 0; }
+.toc a { text-decoration: none; color: #333; display: flex; align-items: baseline; padding: 6px 0; border-bottom: 1px dotted #ccc; }
+.toc a::after { content: leader('.') target-counter(attr(href url), page); margin-left: auto; padding-left: 10px; color: #888; }
+.toc .toc-h1 { font-weight: 700; font-size: 11pt; margin-top: 12px; }
+.toc .toc-h2 { font-weight: 500; font-size: 10pt; padding-left: 18px; color: #555; }
+
+/* === HEADINGS === */
+h1 { font-size: 20pt; font-weight: 700; color: #1a1a2e; margin-top: 0; margin-bottom: 0.6cm; page-break-after: avoid; border-bottom: 2px solid #e94560; padding-bottom: 8px; }
+h2 { font-size: 14pt; font-weight: 700; color: #16213e; margin-top: 0.8cm; margin-bottom: 0.4cm; page-break-after: avoid; }
+h3 { font-size: 12pt; font-weight: 600; color: #0f3460; margin-top: 0.6cm; margin-bottom: 0.3cm; page-break-after: avoid; }
+
+/* === TABLES === */
+table { width: 100%; border-collapse: collapse; margin: 0.5cm 0; font-size: 9pt; max-width: 100%; box-sizing: border-box; page-break-inside: auto; }
+thead { display: table-header-group; }
+tr { page-break-inside: avoid; }
+th { background: #f8f9fa; font-weight: 600; color: #1a1a2e; text-align: left; padding: 7px 10px; border-top: 2px solid #333; border-bottom: 1.5px solid #333; }
+td { padding: 6px 10px; border-bottom: 0.5px solid #ddd; vertical-align: top; }
+tbody tr:last-child td { border-bottom: 2px solid #333; }
+
+/* === CODE BLOCKS === */
+pre { background: #f5f5f5; border: 1px solid #e0e0e0; border-left: 3px solid #e94560; padding: 10px 14px; font-family: 'Consolas', 'Monaco', monospace; font-size: 8.5pt; line-height: 1.45; margin: 0.4cm 0; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; max-width: 100%; box-sizing: border-box; }
+code { font-family: 'Consolas', 'Monaco', monospace; font-size: 8.5pt; background: #f0f0f0; padding: 1px 5px; border-radius: 2px; word-break: break-word; }
+pre code { background: none; padding: 0; }
+
+/* === CALL-OUT BOXES === */
+.insight { border-left: 4px solid #e94560; background: #fdf2f2; padding: 12px 16px; margin: 0.5cm 0; page-break-inside: avoid; }
+.insight-title { font-weight: 700; color: #c0392b; font-size: 10pt; margin-bottom: 6px; }
+.command-box { border-left: 4px solid #0f3460; background: #f0f4f8; padding: 12px 16px; margin: 0.5cm 0; page-break-inside: avoid; }
+.command-title { font-weight: 700; color: #0f3460; font-size: 10pt; margin-bottom: 6px; }
+.result-box { border-left: 4px solid #27ae60; background: #f0faf3; padding: 12px 16px; margin: 0.5cm 0; page-break-inside: avoid; }
+.result-title { font-weight: 700; color: #27ae60; font-size: 10pt; margin-bottom: 6px; }
+.warning { border-left: 4px solid #f39c12; background: #fef9e7; padding: 12px 16px; margin: 0.5cm 0; page-break-inside: avoid; }
+.warning-title { font-weight: 700; color: #d68910; font-size: 10pt; margin-bottom: 6px; }
+
+/* === IMAGES === */
+figure { margin: 0.6cm 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 90%; height: auto; }
+figcaption { font-size: 9pt; color: #666; font-style: italic; margin-top: 6px; }
+
+/* === MISC === */
+strong { font-weight: 700; color: #1a1a2e; }
+.page-break { page-break-before: always; }
+ul, ol { margin: 0.3cm 0; padding-left: 1.2cm; }
+li { margin-bottom: 4px; }
+a { color: #0f3460; text-decoration: none; word-break: break-all; }
+hr { border: none; border-top: 1px solid #ddd; margin: 0.8cm 0; }
+</style>
+</head>
+<body>
+
+<!-- ===== COVER PAGE ===== -->
+<div class="cover">
+<div class="cover-deco1"></div>
+<div class="cover-deco2"></div>
+<div class="cover-deco3"></div>
+<div class="cover-content">
+<div class="cover-tag">Cybersecurity Portfolio Project</div>
+<h1 class="cover-title">Network Perimeter Breach Investigation</h1>
+<p class="cover-subtitle">Command-Line Forensics &amp; Splunk SIEM Analysis<br>Initech Corp Incident Response</p>
+<div class="cover-meta">
+<p><strong>Project Type:</strong> SOC Analyst Level 1 Incident Investigation</p>
+<p><strong>Technologies:</strong> Linux CLI, Splunk SPL, Snort/Suricata IDS</p>
+<p><strong>Date:</strong> August &ndash; September 2025</p>
+<p><strong>Classification:</strong> Incident Response &amp; Digital Forensics</p>
+</div>
+</div>
+<div class="cover-bottom">CONFIDENTIAL &mdash; INCIDENT RESPONSE DOCUMENTATION</div>
+</div>
+
+<!-- ===== TABLE OF CONTENTS ===== -->
+<div class="toc-page">
+<div class="toc-title">Table of Contents</div>
+<ul class="toc">
+<li class="toc-h1"><a href="#sec1">1. Executive Summary</a></li>
+<li class="toc-h1"><a href="#sec2">2. Project Overview &amp; Objectives</a></li>
+<li class="toc-h2"><a href="#sec2-1">2.1 Investigation Objectives</a></li>
+<li class="toc-h2"><a href="#sec2-2">2.2 Environment &amp; Data Sources</a></li>
+<li class="toc-h1"><a href="#sec3">3. Part A: Command-Line Investigation</a></li>
+<li class="toc-h2"><a href="#sec3-1">3.1 Phase 1 &mdash; Initial Log Exploration</a></li>
+<li class="toc-h2"><a href="#sec3-2">3.2 Phase 2 &mdash; Firewall Log Analysis</a></li>
+<li class="toc-h2"><a href="#sec3-3">3.3 Phase 3 &mdash; IDS Alert Analysis</a></li>
+<li class="toc-h2"><a href="#sec3-4">3.4 Phase 4 &mdash; VPN Authentication Analysis</a></li>
+<li class="toc-h2"><a href="#sec3-5">3.5 Phase 5 &mdash; Cross-Correlation &amp; Timeline</a></li>
+<li class="toc-h1"><a href="#sec4">4. Part B: Splunk SIEM Investigation</a></li>
+<li class="toc-h2"><a href="#sec4-1">4.1 Phase 6 &mdash; Data Validation &amp; Field Discovery</a></li>
+<li class="toc-h2"><a href="#sec4-2">4.2 Phase 7 &mdash; IDS Log Investigation in Splunk</a></li>
+<li class="toc-h2"><a href="#sec4-3">4.3 Phase 8 &mdash; Firewall Log Investigation in Splunk</a></li>
+<li class="toc-h2"><a href="#sec4-4">4.4 Phase 9 &mdash; VPN Log Investigation in Splunk</a></li>
+<li class="toc-h2"><a href="#sec4-5">4.5 Phase 10 &mdash; Cross-Source Correlation</a></li>
+<li class="toc-h1"><a href="#sec5">5. Key Findings &amp; Evidence Summary</a></li>
+<li class="toc-h1"><a href="#sec6">6. MITRE ATT&amp;CK Mapping</a></li>
+<li class="toc-h1"><a href="#sec7">7. Root Cause Analysis</a></li>
+<li class="toc-h1"><a href="#sec8">8. Recommendations &amp; Detection Rules</a></li>
+<li class="toc-h2"><a href="#sec8-1">8.1 Immediate Actions</a></li>
+<li class="toc-h2"><a href="#sec8-2">8.2 Splunk Detection Rules</a></li>
+<li class="toc-h1"><a href="#sec9">9. Appendix: Command &amp; Query Reference</a></li>
+<li class="toc-h2"><a href="#sec9-1">9.1 CLI Command Reference</a></li>
+<li class="toc-h2"><a href="#sec9-2">9.2 Splunk SPL Query Reference</a></li>
+</ul>
+</div>
+
+<!-- ===== SECTION 1: EXECUTIVE SUMMARY ===== -->
+<h1 id="sec1">1. Executive Summary</h1>
+
+<p>This project documents the complete investigation of a <strong>sustained network perimeter breach</strong> at Initech Corp, a financial services firm, conducted during August through September 2025. The investigation employed both <strong>command-line forensics</strong> and <strong>Splunk SIEM analysis</strong> to analyze 2,485 events across firewall logs, IDS alerts, and VPN authentication records. The findings confirm that an adversary maintained unauthorized access for the entire 37-day logging period, establishing persistent command-and-control over an employee workstation via Metasploit port 4444 and exfiltrating data from the internal web application server using HTTP POST uploads.</p>
+
+<p>The attacker exploited <strong>stolen VPN credentials</strong> for four user accounts, conducted a <strong>118-attempt brute force</strong> against a service account in 19 minutes, performed <strong>internal lateral scanning</strong> across three sensitive hosts, and maintained <strong>80 C2 beacons</strong> every six hours for 20 days. The IDS correctly detected all malicious activity and generated Priority 1 alerts, but the overwhelmed SOC team failed to investigate or act. The firewall was misconfigured with a <strong>72.7% allow rate</strong>, permitting 87 connections on the Metasploit default port 4444.</p>
+
+<div class="insight">
+<div class="insight-title">Bottom Line</div>
+<p>The perimeter was breached on Day 1 (August 25) using compromised VPN credentials. The attacker maintained active control until the logs ended on September 30. No remediation was performed during the entire month. The attack was detected but never acted upon due to alert fatigue, missing security controls, and lack of log correlation.</p>
+</div>
+
+<figure>
+<img src="chart4_killchain.png" alt="Attack Kill Chain Timeline">
+<figcaption>Figure 1: Attack Kill Chain Timeline spanning the full 37-day incident window</figcaption>
+</figure>
+
+<!-- ===== SECTION 2: PROJECT OVERVIEW ===== -->
+<h1 id="sec2" class="page-break">2. Project Overview &amp; Objectives</h1>
+
+<h2 id="sec2-1">2.1 Investigation Objectives</h2>
+
+<p>The primary question driving this investigation was: <strong>"Did the adversary breach the perimeter?"</strong> This deceptively simple question required answering multiple sub-questions through structured hypothesis testing and evidence collection. Each objective was tracked against quantifiable success criteria derived from the three available log sources.</p>
+
+<table>
+<thead>
+<tr><th>Objective</th><th>Description</th><th>Success Criteria</th></tr>
+</thead>
+<tbody>
+<tr><td>Identify initial access vector</td><td>Determine how the attacker first entered the network</td><td>Evidence of the first malicious connection from VPN, firewall, or IDS logs</td></tr>
+<tr><td>Map lateral movement</td><td>Identify internal hosts scanned or compromised after initial access</td><td>Firewall and IDS evidence of internal scanning from VPN-assigned IPs</td></tr>
+<tr><td>Confirm persistent C2</td><td>Prove ongoing command-and-control communication</td><td>Sequential beaconing pattern with timestamps across multiple days</td></tr>
+<tr><td>Quantify data exfiltration</td><td>Measure volume and timing of stolen data</td><td>IDS alerts with "Potential Data Exfiltration" classification and byte counts</td></tr>
+<tr><td>Identify compromised accounts</td><td>Find all stolen or brute-forced credentials</td><td>VPN auth logs showing attacker source IPs for multiple usernames</td></tr>
+<tr><td>Assess control failures</td><td>Determine which security controls failed and why</td><td>Gap analysis comparing observed security posture against industry standards</td></tr>
+</tbody>
+</table>
+
+<h2 id="sec2-2">2.2 Environment &amp; Data Sources</h2>
+
+<p>The investigation analyzed three independent log sources, each providing a different perspective on network activity. Understanding the strengths and limitations of each source was essential for building a complete picture through cross-correlation.</p>
+
+<table>
+<thead>
+<tr><th>Data Source</th><th>Sourcetype</th><th>Format</th><th>Events</th><th>Key Fields</th></tr>
+</thead>
+<tbody>
+<tr><td>Firewall Logs</td><td><code>firewall_logs</code></td><td>JSON</td><td>1,284</td><td><code>action</code>, <code>src_ip</code>, <code>dst_ip</code>, <code>src_port</code>, <code>dst_port</code>, <code>protocol</code>, <code>bytes</code></td></tr>
+<tr><td>IDS Alerts</td><td><code>ids_logs</code></td><td>JSON</td><td>983</td><td><code>alert</code>, <code>classification</code>, <code>priority</code>, <code>src_ip</code>, <code>dst_ip</code>, <code>dst_port</code>, <code>bytes</code></td></tr>
+<tr><td>VPN Authentication</td><td><code>vpn_logs</code></td><td>JSON</td><td>218</td><td><code>username</code>, <code>result</code>, <code>src_ip</code>, <code>assigned_ip</code></td></tr>
+<tr><td><strong>Total</strong></td><td></td><td></td><td><strong>2,485</strong></td><td></td></tr>
+</tbody>
+</table>
+
+<p>The network architecture under investigation included a VPN Gateway, an internal web application server, a finance file server, and an employee workstation. The attacker operated from seven distinct external IP addresses and maintained a dedicated C2 server at <code>198.51.100.77</code>.</p>
+
+<table>
+<thead>
+<tr><th>Asset</th><th>IP Address</th><th>Role</th></tr>
+</thead>
+<tbody>
+<tr><td>VPN-GW</td><td><code>10.0.0.50</code></td><td>VPN Gateway (Linux)</td></tr>
+<tr><td>APP-WEB-01</td><td><code>10.0.0.51</code></td><td>Internal Web/App Server (Linux)</td></tr>
+<tr><td>FINANCE-SRV1</td><td><code>10.0.0.20</code></td><td>File/Finance Server (Windows)</td></tr>
+<tr><td>WORKSTATION-60</td><td><code>10.0.0.60</code></td><td>Employee Workstation, Sales (Windows 10)</td></tr>
+<tr><td>VPN Client Pool</td><td><code>10.8.0.0/24</code></td><td>Remote VPN client addresses</td></tr>
+</tbody>
+</table>
+
+<!-- ===== SECTION 3: PART A - CLI INVESTIGATION ===== -->
+<h1 id="sec3" class="page-break">3. Part A: Command-Line Investigation</h1>
+
+<p>The command-line investigation served as the foundational phase, establishing familiarity with log formats, identifying initial anomalies, and generating hypotheses that guided subsequent Splunk analysis. Working directly with raw log files using standard Unix utilities (<code>cat</code>, <code>grep</code>, <code>awk</code>, <code>sort</code>, <code>uniq</code>, <code>cut</code>, <code>head</code>, <code>tail</code>, <code>wc</code>) demonstrates core digital forensics competency and provides a baseline for validating SIEM findings.</p>
+
+<h2 id="sec3-1">3.1 Phase 1 &mdash; Initial Log Exploration</h2>
+
+<p>Before analyzing specific attack indicators, the investigation began with data reconnaissance to understand what information was available, how it was structured, and how much data existed. This phase is critical because it prevents analysts from making false assumptions about field names, date formats, or log coverage.</p>
+
+<h3>3.1.1 Viewing the First Firewall Entries</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat firewall.log | head -n 20</pre>
+</div>
+
+<p><strong>Why this command:</strong> The <code>head</code> command displays the first 20 lines of a file, providing immediate visibility into the log format without loading the entire file into memory. In incident response, understanding log structure is the prerequisite for every subsequent analysis step. The firewall log revealed JSON-formatted entries with <code>action</code> (ALLOW/BLOCK), source and destination IPs/ports, and protocol information. This established that the firewall was a stateful inspection device logging every connection attempt.</p>
+
+<h3>3.1.2 Counting Total Firewall Events</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat firewall.log | wc -l</pre>
+</div>
+
+<p><strong>Why this command:</strong> <code>wc -l</code> (word count, lines) provides the total number of log entries. Knowing the data volume helps analysts estimate analysis scope and set expectations for query performance. The result of <strong>1,284 events</strong> over a 37-day period indicated moderate log volume, manageable for both CLI and SIEM analysis.</p>
+
+<h3>3.1.3 Viewing the Most Recent Firewall Entries</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat firewall.log | tail -n 20</pre>
+</div>
+
+<p><strong>Why this command:</strong> The <code>tail</code> command shows the last 20 lines, revealing the most recent activity at the end of the logging period. This is particularly valuable in incident response because it shows whether the attack was still active when logging stopped. The tail output immediately revealed suspicious outbound connections from internal hosts to <code>198.51.100.77:4444</code>, suggesting active command-and-control communication at the end of the log period.</p>
+
+<div class="result-box">
+<div class="result-title">Key Finding from Tail</div>
+<p>The last 20 lines of <code>firewall.log</code> showed <code>ALLOW TCP 10.0.0.60:30067 -&gt; 198.51.100.77:4444</code> and <code>ALLOW TCP 10.0.0.51:40053 -&gt; 198.51.100.77:8080</code>. An internal workstation communicating with an external IP on port 4444 (Metasploit default) is a definitive indicator of compromise.</p>
+</div>
+
+<h3>3.1.4 Viewing IDS Alert Head</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>head ids_alerts.log</pre>
+</div>
+
+<p><strong>Why this command:</strong> The IDS alert log uses a Snort/Suricata-style format with signature IDs, alert names, classifications, and priority levels. Understanding this format is essential for interpreting what the IDS detected. The first 10 alerts showed <code>ET POLICY Suspicious HTTP</code>, <code>ET INFO Possible Benign Scan</code>, and <code>ET WEB_SERVER Possible SQL Injection</code> signatures targeting internal assets from external IPs, indicating active reconnaissance from Day 1.</p>
+
+<h3>3.1.5 Viewing VPN Authentication Head</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>head -n 20 vpn_auth.log</pre>
+</div>
+
+<p><strong>Why this command:</strong> The VPN log format revealed timestamp, source IP, username, result (SUCCESS/FAIL), and assigned VPN IP fields. The first entries showed external IPs successfully authenticating as internal users, immediately suggesting credential compromise.</p>
+
+<h2 id="sec3-2">3.2 Phase 2 &mdash; Firewall Log Analysis</h2>
+
+<p>With the log formats understood, the investigation progressed to targeted analysis of the firewall logs to identify attack patterns, quantify defensive performance, and locate evidence of malicious traffic that the firewall permitted.</p>
+
+<h3>3.2.1 Destination Port Frequency Analysis</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat firewall.log | awk '{print $7}' | cut -d':' -f2 | sort | uniq -c | sort -nr</pre>
+</div>
+
+<p><strong>Why this command:</strong> This command extracts the destination port from each firewall entry, counts occurrences, and ranks them by frequency. Understanding which ports receive the most traffic helps identify the attacker's primary targets and the organization's exposed attack surface. The pipeline works as follows: <code>awk '{print $7}'</code> extracts the destination field (e.g., <code>10.0.0.50:443</code>), <code>cut -d':' -f2</code> isolates the port number, <code>sort | uniq -c</code> counts unique ports, and <code>sort -nr</code> ranks numerically in reverse order.</p>
+
+<div class="result-box">
+<div class="result-title">Results</div>
+<table>
+<thead><tr><th>Port</th><th>Service</th><th>Count</th></tr></thead>
+<tbody>
+<tr><td>443</td><td>HTTPS</td><td>245</td></tr>
+<tr><td>80</td><td>HTTP</td><td>163</td></tr>
+<tr><td>8080</td><td>HTTP Alt</td><td>162</td></tr>
+<tr><td>25</td><td>SMTP</td><td>154</td></tr>
+<tr><td>53</td><td>DNS (TCP)</td><td>153</td></tr>
+<tr><td><strong>4444</strong></td><td><strong>Metasploit</strong></td><td><strong>127</strong></td></tr>
+<tr><td>22</td><td>SSH</td><td>72</td></tr>
+<tr><td>3389</td><td>RDP</td><td>67</td></tr>
+<tr><td>445</td><td>SMB</td><td>62</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>3.2.2 Firewall Action Analysis (ALLOW vs BLOCK)</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat firewall.log | grep -c "ALLOW"
+cat firewall.log | grep -c "BLOCK"</pre>
+</div>
+
+<p><strong>Why these commands:</strong> <code>grep -c</code> counts occurrences without displaying the lines. Comparing ALLOW versus BLOCK counts reveals the firewall's overall defensive posture. A properly configured perimeter firewall should block significantly more than it allows for unsolicited external traffic.</p>
+
+<div class="result-box">
+<div class="result-title">Results</div>
+<table>
+<thead><tr><th>Action</th><th>Count</th><th>Percentage</th></tr></thead>
+<tbody>
+<tr><td><strong>ALLOW</strong></td><td><strong>933</strong></td><td><strong>72.7%</strong></td></tr>
+<tr><td>BLOCK</td><td>351</td><td>27.3%</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>A <strong>72.7% allow rate</strong> is extraordinarily permissive. Security frameworks including NIST SP 800-53 (SC-7(5)) and PCI DSS mandate a <strong>"deny by default, allow by exception"</strong> policy for perimeter firewalls <a class="cite" href="#ref-1">[1]</a><a class="cite" href="#ref-2">[2]</a>. Under this model, unsolicited external traffic is blocked unless explicitly permitted. Initech's firewall operated inversely &mdash; allowing 72.7% of all traffic (933 ALLOW vs 351 BLOCK) &mdash; violating the fundamental principle of default-deny posture recommended by NIST <a class="cite" href="#ref-3">[3]</a>.</p>
+
+<h3>3.2.3 Identifying Blocked External IPs</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat firewall.log | grep "BLOCK" | cut -d' ' -f5 | cut -d':' -f1 | sort -nr | uniq -c</pre>
+</div>
+
+<p><strong>Why this command:</strong> This pipeline extracts the source IP from blocked connections to identify which external IPs triggered the firewall's defensive rules most frequently. The command chain: <code>grep "BLOCK"</code> filters denied connections, <code>cut -d' ' -f5</code> gets the source IP:port field, <code>cut -d':' -f1</code> strips the port, <code>sort | uniq -c</code> counts occurrences, and <code>sort -nr</code> ranks by count.</p>
+
+<div class="result-box">
+<div class="result-title">Results</div>
+<table>
+<thead><tr><th>Source IP</th><th>Block Count</th></tr></thead>
+<tbody>
+<tr><td><strong>203.0.113.45</strong></td><td><strong>279</strong></td></tr>
+<tr><td>203.0.113.10</td><td>46</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>3.2.4 Allowed Connections from the Primary Attacker IP</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat firewall.log | grep 203.0.113.45 | grep "ALLOW" | head</pre>
+</div>
+
+<p><strong>Why this command:</strong> After identifying <code>203.0.113.45</code> as the most-blocked IP, this query reveals what traffic the firewall <em>allowed</em> from that same IP. If an IP is blocked aggressively on some ports but allowed on others, it indicates inconsistent firewall rules or targeted exploitation of open services. The results showed this IP was ALLOWED to connect to <code>10.0.0.60:4444</code> (Metasploit) and <code>10.0.0.20:4444</code>, confirming active exploitation attempts that succeeded.</p>
+
+<h3>3.2.5 First 10 Blocked Connections</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat firewall.log | grep "BLOCK" | head</pre>
+</div>
+
+<p><strong>Why this command:</strong> Understanding what the firewall blocked provides insight into which services the attacker probed and what the firewall was configured to protect. The blocked connections showed attempts on ports 21 (FTP), 22 (SSH), 23 (Telnet), 3389 (RDP), 445 (SMB), and 4444 (Metasploit), demonstrating a comprehensive scan across all common service ports.</p>
+
+<figure>
+<img src="chart1_phases.png" alt="Attack Phase Distribution">
+<figcaption>Figure 2: Firewall attack phase distribution (left) and Metasploit port 4444 actions (right)</figcaption>
+</figure>
+
+<h2 id="sec3-3" class="page-break">3.3 Phase 3 &mdash; IDS Alert Analysis</h2>
+
+<p>The IDS provides the semantic layer of the investigation, translating raw network connections into actionable intelligence about attack techniques and malware behavior. Unlike the firewall, which only records what was allowed or blocked, the IDS identifies <em>what type of attack</em> was attempted.</p>
+
+<h3>3.3.1 Finding Metasploit/C2 Activity</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>grep "4444" ids_alerts.log</pre>
+</div>
+
+<p><strong>Why this command:</strong> Port 4444 is the default listener port for Metasploit Framework's reverse shells and Meterpreter payloads. In any enterprise environment, traffic on this port should be treated as highly suspicious. This <code>grep</code> search quickly locates all IDS alerts involving port 4444, which became the central pivot point of the entire investigation.</p>
+
+<div class="result-box">
+<div class="result-title">Results</div>
+<p>The output revealed two distinct phases: (1) inbound exploitation from external IPs to <code>10.0.0.60:4444</code> and <code>10.0.0.20:4444</code> in late August, and (2) starting September 11, outbound <code>ET TROJAN Possible C2 Beaconing</code> alerts from <code>10.0.0.60</code> to <code>198.51.100.77:4444</code> every 6 hours.</p>
+</div>
+
+<h3>3.3.2 Tracing the VPN IP Assignment (10.8.0.23)</h3>
+
+<p>Before analyzing IDS alerts for the VPN attacker's activity, it is essential to establish <strong>how</strong> the attacker obtained the internal IP <code>10.8.0.23</code>. This attribution step links the VPN authentication breach to the subsequent lateral movement and is a critical component of the evidence chain.</p>
+
+<h3>CLI Command</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>grep "10.8.0.23" vpn_auth.log</pre>
+</div>
+
+<p><strong>Why this command:</strong> The <code>grep</code> command searches the VPN authentication log for all entries where the assigned IP was <code>10.8.0.23</code>. This reveals which username was assigned this IP, when the assignment occurred, and from which external source IP the login originated. This is the attribution link that connects the brute force attack to the internal network scan.</p>
+
+<div class="result-box">
+<div class="result-title">Results</div>
+<table>
+<thead><tr><th>Timestamp</th><th>Source IP</th><th>Username</th><th>Result</th><th>Assigned IP</th></tr></thead>
+<tbody>
+<tr><td>2025-09-03 02:19:40</td><td><code>203.0.113.45</code></td><td><strong>svc_backup</strong></td><td><strong>SUCCESS</strong></td><td><code>10.8.0.23</code></td></tr>
+<tr><td>2025-09-03 02:19:50</td><td><code>203.0.113.45</code></td><td>svc_backup</td><td>SUCCESS</td><td><code>10.8.0.23</code></td></tr>
+<tr><td>2025-09-04 05:22:55</td><td><code>203.0.113.10</code></td><td>bob</td><td>SUCCESS</td><td><code>10.8.0.23</code></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Alternative CLI Command — Tracing via Username</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>grep "svc_backup" vpn_auth.log</pre>
+</div>
+
+<p><strong>Why this command:</strong> Instead of searching by assigned IP, this command searches by <strong>username</strong> — filtering the VPN log for all events involving <code>svc_backup</code>. This approach reveals the <strong>complete lifecycle</strong> of the compromised account: the brute force attack (118 consecutive FAIL results), the moment of compromise (SUCCESS at 02:19:40), and the assignment of <code>10.8.0.23</code>. The output shows <code>svc_backup</code> was targeted exclusively by <code>203.0.113.45</code>, confirming this was the attacker's primary pivot account.</p>
+
+<div class="result-box">
+<div class="result-title">Key Output</div>
+<table>
+<thead><tr><th>Result</th><th>Count</th><th>Significance</th></tr></thead>
+<tbody>
+<tr><td><strong>FAIL</strong></td><td><strong>118</strong></td><td>Brute force attempts (every 10 seconds, 19 minutes)</td></tr>
+<tr><td><strong>SUCCESS</strong></td><td><strong>17</strong></td><td>Successful logins throughout September</td></tr>
+<tr><td>Assigned IP</td><td><code>10.8.0.23</code></td><td>VPN-CLIENT-ATTK (lateral movement platform)</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Splunk Query</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=vpn_logs assigned_ip="10.8.0.23"
+| table _time, src_ip, username, result, assigned_ip
+| sort _time</pre>
+</div>
+
+<p><strong>Why this query:</strong> Filtering by <code>assigned_ip="10.8.0.23"</code> traces every VPN session that received this specific IP address. The <code>table</code> command formats output into clean columns showing who got the IP, when, and from which external source. This directly links the VPN authentication to the subsequent lateral movement scan from <code>10.8.0.23</code> on September 5.</p>
+
+<div class="insight">
+<div class="insight-title">Attribution Chain</div>
+<p><strong>Brute force svc_backup</strong> (Sep 3, 02:00&ndash;02:19) &rarr; <strong>SUCCESS at 02:19:40</strong> &rarr; <strong>Assigned 10.8.0.23</strong> &rarr; <strong>Sep 5: 10.8.0.23 scans internal network</strong> (3 hosts, 3 ports, 90 connections)</p>
+</div>
+
+<h3>3.3.3 IDS Alerts for the VPN Attacker IP</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>grep "10.8.0.23" ids_alerts.log | head</pre>
+</div>
+
+<p><strong>Why this command:</strong> The IP <code>10.8.0.23</code> was assigned to the compromised <code>svc_backup</code> account during the September 3 brute force. Checking the IDS for this IP reveals whether the IDS detected the internal lateral movement scan that occurred on September 5.</p>
+
+<div class="result-box">
+<div class="result-title">Results</div>
+<p>The IDS detected the lateral movement with high-accuracy signatures: <code>ET SCAN Possible SSH Scan</code>, <code>ET EXPLOIT Possible MS-SMB Lateral Movement</code>, and <code>ET EXPLOIT Possible RDP Brute Force</code>. All alerts were Priority 1 with classification "Attempted Unauthorized Access."</p>
+</div>
+
+<h3>3.3.4 Finding C2 Beaconing Alerts</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat ids_alerts.log | grep C2 | head</pre>
+</div>
+
+<p><strong>Why this command:</strong> Searching for "C2" in the IDS alerts identifies all command-and-control-related detections. This query revealed 80 instances of <code>ET TROJAN Possible C2 Beaconing</code> from <code>10.0.0.60</code> to <code>198.51.100.77:4444</code>, with sequential source ports <code>30000</code> through <code>30079</code> and clockwork timing every 6 hours.</p>
+
+<h3>3.3.5 IDS Alerts Targeting WORKSTATION-60</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat ids_alerts.log | grep -n 10.0.0.60 | cut -d' ' -f6,7,8,9,10,19,22,23 | head</pre>
+</div>
+
+<p><strong>Why this command:</strong> This complex pipeline extracts the alert signature name and destination details for all IDS alerts involving WORKSTATION-60. The <code>grep -n</code> adds line numbers for reference, and <code>cut</code> extracts specific fields from the Snort alert format. WORKSTATION-60 was the most heavily attacked internal host, receiving SQL injection payloads, suspicious HTTP traffic, port scanning, and Metasploit connections across 155+ alert lines.</p>
+
+<h3>3.3.6 Unique Alert Types for WORKSTATION-60</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat ids_alerts.log | grep -n 10.0.0.60 | cut -d' ' -f6,7,8,9,10,19,22,23 | uniq -c | sort -nr | head</pre>
+</div>
+
+<p><strong>Why this command:</strong> Adding <code>uniq -c | sort -nr</code> to the previous pipeline counts how many times each unique alert pattern appears, ranking by frequency. This quickly identifies the dominant attack technique for a specific host. The result showed <code>TROJAN Possible C2 Beaconing</code> as the #1 most frequent alert (32+ occurrences), confirming that C2 was the primary ongoing activity.</p>
+
+<h3>3.3.7 IDS Alerts for FINANCE-SRV1 and APP-WEB-01</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat ids_alerts.log | grep -n 10.0.0.20 | cut -d' ' -f6,7,8,9,10,19,22,23 | uniq -c | sort -nr | head
+cat ids_alerts.log | grep -n 10.0.0.51 | cut -d' ' -f6,7,8,9,10,19,22,23 | uniq -c | sort -nr | head</pre>
+</div>
+
+<p><strong>Why these commands:</strong> Running the same analysis for FINANCE-SRV1 and APP-WEB-01 enables comparison of attack patterns across all three primary internal targets. FINANCE-SRV1 showed primarily port scanning alerts with no outbound C2, suggesting it was heavily targeted but may not have been successfully compromised for persistent communication. APP-WEB-01, however, showed <code>INFO Possible HTTP POST Large</code> alerts to <code>198.51.100.77:8080</code> — the data exfiltration channel.</p>
+
+<figure>
+<img src="chart2_c2_lateral.png" alt="C2 and Lateral Movement">
+<figcaption>Figure 3: C2 beaconing timeline (top) and lateral movement scan from VPN-CLIENT-ATTK (bottom)</figcaption>
+</figure>
+
+<h2 id="sec3-4" class="page-break">3.4 Phase 4 &mdash; VPN Authentication Analysis</h2>
+
+<p>The VPN logs answer the most critical question in any perimeter breach: <strong>"How did they get in?"</strong> Analyzing authentication patterns reveals whether the attacker used stolen credentials, brute force, or valid but compromised accounts.</p>
+
+<h3>3.4.1 Finding the svc_backup Brute Force</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>grep "svc_backup" vpn_auth.log</pre>
+</div>
+
+<p><strong>Why this command:</strong> <code>svc_backup</code> is a service account name that immediately stands out as suspicious for VPN access. Service accounts are intended for automated processes, not human VPN logins. This query revealed a devastating pattern: 118 consecutive FAIL results followed by SUCCESS, all from the same external IP.</p>
+
+<h3>3.4.2 Brute Force Timeline Analysis</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>grep "2025-09-03" vpn_auth.log | grep -i "success\|fail"</pre>
+</div>
+
+<p><strong>Why this command:</strong> Filtering to September 3 and searching for both SUCCESS and FAIL results reveals the complete timeline of the brute force attack. The output showed FAIL entries every 10 seconds from 02:00:00 to 02:19:30, followed by two SUCCESS entries at 02:19:40 and 02:19:50 with <code>assigned_ip=10.8.0.23</code>.</p>
+
+<div class="result-box">
+<div class="result-title">Brute Force Statistics</div>
+<table>
+<thead><tr><th>Attribute</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Attacker IP</td><td><code>203.0.113.45</code></td></tr>
+<tr><td>Target Account</td><td><code>svc_backup</code></td></tr>
+<tr><td>Start Time</td><td>2025-09-03 02:00:00</td></tr>
+<tr><td>Success Time</td><td>2025-09-03 02:19:40</td></tr>
+<tr><td>Duration</td><td><strong>19 minutes, 40 seconds</strong></td></tr>
+<tr><td>Attempt Frequency</td><td>Every 10 seconds</td></tr>
+<tr><td>Total Failed Attempts</td><td><strong>118</strong></td></tr>
+<tr><td>Assigned VPN IP</td><td><code>10.8.0.23</code></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>3.4.3 Finding Who Was Assigned 10.8.0.23</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>grep "10.8.0.23" vpn_auth.log</pre>
+</div>
+
+<p><strong>Why this command:</strong> The IP <code>10.8.0.23</code> was the VPN-CLIENT-ATTK that conducted the September 5 internal scan. Identifying which account was assigned this IP links the VPN authentication to the lateral movement activity. The results showed <code>svc_backup</code> was assigned <code>10.8.0.23</code> on September 3 at 02:19, directly connecting the brute force to the internal scan.</p>
+
+<h3>3.4.4 Identifying All Compromised Accounts</h3>
+
+<p>After establishing that <code>203.0.113.45</code> was the brute force IP, the investigation expanded to check which other accounts logged in from this IP. The VPN log analysis revealed that <code>alice</code>, <code>bob</code>, <code>jsmith</code>, and <code>svc_backup</code> all successfully authenticated from <code>203.0.113.45</code> — confirming that four separate accounts were compromised by the same attacker infrastructure.</p>
+
+<h3>Command 1 — View Full Login History</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>grep "203.0.113.45" vpn_auth.log | grep "SUCCESS"</pre>
+</div>
+
+<p><strong>Why this command:</strong> This command filters the VPN authentication log for all <strong>successful logins</strong> originating from the attacker's primary IP (<code>203.0.113.45</code>). The output displays the complete chronological history — including timestamps, usernames, and assigned internal IPs — proving that multiple accounts were compromised and used by the same attacker infrastructure. This is direct evidence of credential theft, not legitimate user activity.</p>
+
+<div class="result-box">
+<div class="result-title">Key Entries</div>
+<table>
+<thead><tr><th>Date</th><th>Time</th><th>Source IP</th><th>Username</th><th>Result</th><th>Assigned IP</th></tr></thead>
+<tbody>
+<tr><td>2025-08-25</td><td>08:25:10</td><td><code>203.0.113.45</code></td><td><strong>alice</strong></td><td>SUCCESS</td><td>10.8.0.143</td></tr>
+<tr><td>2025-08-26</td><td>08:55:14</td><td><code>203.0.113.45</code></td><td><strong>bob</strong></td><td>SUCCESS</td><td>10.8.0.126</td></tr>
+<tr><td>2025-08-28</td><td>03:20:33</td><td><code>203.0.113.45</code></td><td><strong>svc_backup</strong></td><td>SUCCESS</td><td>10.8.0.193</td></tr>
+<tr><td>2025-09-01</td><td>01:57:06</td><td><code>203.0.113.45</code></td><td><strong>alice</strong></td><td>SUCCESS</td><td>10.8.0.89</td></tr>
+<tr><td>2025-09-03</td><td>02:19:40</td><td><code>203.0.113.45</code></td><td><strong>svc_backup</strong></td><td>SUCCESS</td><td><strong>10.8.0.23</strong></td></tr>
+<tr><td>2025-09-13</td><td>03:48:00</td><td><code>203.0.113.45</code></td><td><strong>svc_backup</strong></td><td>SUCCESS</td><td>10.8.0.88</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Command 2 — Count by Username</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>grep "203.0.113.45" vpn_auth.log | grep "SUCCESS" | awk '{print $4}' | sort | uniq -c | sort -nr</pre>
+</div>
+
+<p><strong>Why this command:</strong> This pipeline aggregates the successful logins from <code>203.0.113.45</code> by username, producing a ranked summary of how many times each compromised account was used. It confirms the scope of credential compromise in a single line of output.</p>
+
+<div class="result-box">
+<div class="result-title">Results</div>
+<table>
+<thead><tr><th>Count</th><th>Username</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td><strong>9</strong></td><td><strong>alice</strong></td><td>Compromised</td></tr>
+<tr><td><strong>6</strong></td><td><strong>bob</strong></td><td>Compromised</td></tr>
+<tr><td><strong>5</strong></td><td><strong>jsmith</strong></td><td>Compromised</td></tr>
+<tr><td><strong>7</strong></td><td><strong>svc_backup</strong></td><td>Compromised (post-brute force)</td></tr>
+</tbody>
+</table>
+</div>
+
+<figure>
+<img src="chart3_vpn.png" alt="VPN Brute Force and Compromised Accounts">
+<figcaption>Figure 4: VPN brute force pattern (left) and successful logins from attacker IP (right)</figcaption>
+</figure>
+
+<h2 id="sec3-5" class="page-break">3.5 Phase 5 &mdash; Cross-Correlation &amp; Timeline</h2>
+
+<p>The final phase of the CLI investigation involved synthesizing findings from all three log sources into a coherent attack narrative. Cross-correlation validates findings by requiring independent confirmation from multiple data sources before accepting a conclusion.</p>
+
+<h3>3.5.1 Unique Connection Flows for WORKSTATION-60</h3>
+
+<div class="command-box">
+<div class="command-title">Command</div>
+<pre>cat firewall.log | grep 10.0.0.60 | cut -d' ' -f5,6,7 | uniq | sort</pre>
+</div>
+
+<p><strong>Why this command:</strong> Using <code>uniq</code> removes duplicate connection flows, showing only unique source-to-destination patterns. This provides a clean summary of every distinct type of traffic involving WORKSTATION-60. The output revealed three distinct attack phases: (1) direct internet attacks on 11 ports from 7 external IPs, (2) internal lateral scan from <code>10.8.0.23</code> on ports 22/445/3389, and (3) 80 outbound C2 beacons to <code>198.51.100.77:4444</code> using sequential source ports.</p>
+
+<h3>3.5.2 The Complete Evidence Chain</h3>
+
+<table>
+<thead>
+<tr><th>Source</th><th>Key Evidence</th><th>Count</th></tr>
+</thead>
+<tbody>
+<tr><td>VPN Logs</td><td><code>svc_backup</code> brute force (118 FAIL &rarr; SUCCESS)</td><td>218 total events</td></tr>
+<tr><td>VPN Logs</td><td>4 accounts compromised from <code>203.0.113.45</code></td><td>143 total events</td></tr>
+<tr><td>Firewall Logs</td><td>ALLOW vs BLOCK (933 vs 351)</td><td>1,284 flows</td></tr>
+<tr><td>Firewall Logs</td><td>Port 4444 allowed (87 ALLOW, 40 BLOCK)</td><td>127 events</td></tr>
+<tr><td>Firewall Logs</td><td>C2 from WORKSTATION-60 &rarr; <code>198.51.100.77:4444</code></td><td>80 beacons</td></tr>
+<tr><td>IDS Logs</td><td><code>ET TROJAN Possible C2 Beaconing</code></td><td>80 Priority 1 alerts</td></tr>
+<tr><td>IDS Logs</td><td><code>HTTP POST Large Upload</code> &mdash; Potential Data Exfiltration</td><td>Multiple alerts</td></tr>
+<tr><td>IDS Logs</td><td><code>MS-SMB Lateral Movement</code> / <code>RDP Brute Force</code></td><td>Sep 5 scan detected</td></tr>
+</tbody>
+</table>
+
+<!-- ===== SECTION 4: PART B - SPLUNK INVESTIGATION ===== -->
+<h1 id="sec4" class="page-break">4. Part B: Splunk SIEM Investigation</h1>
+
+<p>The Splunk investigation replicated and enhanced all CLI findings using SPL (Search Processing Language), demonstrating SIEM-scale detection, correlation, and visualization capabilities. The data resides in <code>index=network_logs</code> with three sourcetypes: <code>ids_logs</code>, <code>firewall_logs</code>, and <code>vpn_logs</code>.</p>
+
+<h2 id="sec4-1">4.1 Phase 6 &mdash; Data Validation &amp; Field Discovery</h2>
+
+<p>Before hunting in Splunk, analysts must confirm what data is available, which sourcetypes exist, what fields are extracted, and what the raw event format looks like. This prevents wasted effort on queries that reference non-existent fields or sourcetypes.</p>
+
+<h3>4.1.1 Listing All Sourcetypes</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs
+| stats count by sourcetype
+| sort - count</pre>
+</div>
+
+<p><strong>Why this query:</strong> The <code>stats count by sourcetype</code> command is the Splunk equivalent of <code>ls</code> for data discovery. It reveals every sourcetype in the index with event counts, giving analysts a map of available data before they begin hunting. Without this step, analysts risk writing queries against non-existent sourcetypes.</p>
+
+<div class="result-box">
+<div class="result-title">Result</div>
+<table>
+<thead><tr><th>Sourcetype</th><th>Count</th></tr></thead>
+<tbody>
+<tr><td><code>firewall_logs</code></td><td><strong>1,284</strong></td></tr>
+<tr><td><code>ids_logs</code></td><td><strong>983</strong></td></tr>
+<tr><td><code>vpn_logs</code></td><td><strong>218</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>4.1.2 Discovering Available Fields</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=ids_logs
+| fieldsummary
+| table field, type, count, distinct_count</pre>
+</div>
+
+<p><strong>Why this query:</strong> <code>fieldsummary</code> is a Splunk generating command that lists all fields present in the data, along with their data types, occurrence counts, and distinct value counts. This is essential for understanding what data is available for filtering, aggregation, and analysis. The investigation confirmed that critical fields including <code>bytes</code>, <code>src_ip</code>, <code>dst_ip</code>, <code>src_port</code>, <code>dst_port</code>, <code>alert</code>, <code>classification</code>, and <code>priority</code> all existed in the IDS data.</p>
+
+<h3>4.1.3 Viewing Raw Events</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=firewall_logs
+| head 3</pre>
+</div>
+
+<p><strong>Why this query:</strong> <code>head 3</code> in Splunk is the equivalent of <code>head -n 3</code> in CLI. It displays the first three events to confirm the raw format and extracted fields. This revealed that <code>firewall_logs</code> uses JSON format with fields like <code>action</code>, <code>src_ip</code>, <code>dst_ip</code>, <code>dst_port</code>, and <code>protocol</code>.</p>
+
+<h2 id="sec4-2">4.2 Phase 7 &mdash; IDS Log Investigation in Splunk</h2>
+
+<p>The IDS logs contain the richest attack intelligence, with explicit signature names, classifications, and priority levels. Splunk enables rapid searching, aggregation, and visualization of this data at scale.</p>
+
+<h3>4.2.1 Detecting C2 Beaconing</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=ids_logs alert="*C2 Beaconing*"
+| table _time, alert, classification, priority, src_ip, dst_ip, dst_port
+| sort _time</pre>
+</div>
+
+<p><strong>Why this query:</strong> Searching for <code>*C2 Beaconing*</code> in the <code>alert</code> field with wildcard matching catches the full signature name regardless of prefix. The <code>table</code> command formats output into clean columns, and <code>sort _time</code> orders chronologically. This query directly confirms the 80 C2 beaconing alerts that the CLI investigation identified through <code>grep</code>.</p>
+
+<div class="result-box">
+<div class="result-title">Result</div>
+<p>80 alerts from <code>10.0.0.60</code> &rarr; <code>198.51.100.77:4444</code>, every 6 hours, Priority 1, classification "A network Trojan was detected."</p>
+</div>
+
+<h3>4.2.2 C2 Beacon Count and Bytes</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=ids_logs alert="*C2 Beaconing*"
+| stats count as beacon_count, sum(bytes) as total_bytes, avg(bytes) as avg_bytes
+    by src_ip, dst_ip, dst_port
+| eval total_MB=round(total_bytes/1024/1024, 2),
+     avg_KB=round(avg_bytes/1024, 2)
+| table src_ip, dst_ip, dst_port, beacon_count, total_MB, avg_KB
+| sort - beacon_count</pre>
+</div>
+
+<p><strong>Why this query:</strong> <code>stats</code> is Splunk's primary aggregation command, equivalent to SQL GROUP BY. This query counts beacons, sums total bytes transferred, and calculates average bytes per beacon. The <code>eval</code> command converts bytes to human-readable MB and KB. This quantifies whether the C2 channel was used for command issuance (small payloads) or data transfer (large payloads).</p>
+
+<h3>4.2.3 Detecting Data Exfiltration</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=ids_logs classification="*Exfiltration*"
+| table _time, alert, classification, priority, src_ip, dst_ip, dst_port
+| sort _time</pre>
+</div>
+
+<p><strong>Why this query:</strong> Searching the <code>classification</code> field for "*Exfiltration*" finds all alerts explicitly classified as data exfiltration. This is more precise than searching alert names because classifications are assigned by the IDS based on the traffic pattern's semantic meaning. The result revealed the <code>ET INFO Possible HTTP POST Large Upload</code> alert with classification <code>Potential Data Exfiltration</code> from APP-WEB-01 to <code>198.51.100.77:8080</code>.</p>
+
+<h3>4.2.4 Quantifying Exfiltration Volume</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=ids_logs alert="*HTTP POST Large*"
+| stats sum(bytes) as total_exfiltrated_bytes,
+     count as upload_events,
+     avg(bytes) as avg_upload_size
+    by src_ip, dst_ip, dst_port
+| eval total_exfiltrated_MB=round(total_exfiltrated_bytes/1024/1024, 2),
+     avg_upload_size_KB=round(avg_upload_size/1024, 2)
+| table src_ip, dst_ip, dst_port, upload_events,
+     total_exfiltrated_MB, avg_upload_size_KB
+| sort - total_exfiltrated_MB</pre>
+</div>
+
+<p><strong>Why this query:</strong> This is the most critical exfiltration query. It leverages the <code>bytes</code> field (confirmed during Phase 6 validation) to calculate actual data volume in megabytes. The <code>sum(bytes)</code> provides total exfiltrated data, <code>count</code> shows how many upload events occurred, and <code>avg(bytes)</code> reveals the typical upload size. This transforms the investigation from "suspected exfiltration" to "quantified data breach."</p>
+
+<h3>4.2.5 Finding Lateral Movement Alerts</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=ids_logs src_ip="10.8.0.23"
+| table _time, alert, classification, priority, dst_ip, dst_port
+| sort _time</pre>
+</div>
+
+<p><strong>Why this query:</strong> Filtering by <code>src_ip="10.8.0.23"</code> isolates all IDS alerts generated by the VPN attacker's IP during the September 5 lateral scan. This directly maps the internal reconnaissance activity that the firewall logs showed as connection flows. The IDS adds semantic context, identifying the specific attack techniques: SSH scanning, SMB lateral movement, and RDP brute force.</p>
+
+<h3>4.2.6 Lateral Movement Summary Statistics</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=ids_logs src_ip="10.8.0.23"
+| stats count by alert, dst_ip, dst_port, priority
+| sort - count</pre>
+</div>
+
+<p><strong>Why this query:</strong> <code>stats count by</code> with multiple grouping fields creates a pivot table showing which alert types targeted which hosts on which ports. This summary view is ideal for incident reports because it consolidates dozens of individual alerts into a concise attack profile.</p>
+
+<h2 id="sec4-3" class="page-break">4.3 Phase 8 &mdash; Firewall Log Investigation in Splunk</h2>
+
+<p>The firewall logs provide the connection-level evidence that proves traffic actually traversed the network. While the IDS identifies what the traffic <em>was</em>, the firewall proves whether it was <em>allowed</em> or <em>blocked</em>.</p>
+
+<h3>4.3.1 ALLOW vs BLOCK Statistics</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=firewall_logs
+| stats count by action
+| sort - count</pre>
+</div>
+
+<p><strong>Why this query:</strong> This is the Splunk equivalent of <code>grep -c "ALLOW"</code> and <code>grep -c "BLOCK"</code> from the CLI phase. The <code>stats count by action</code> aggregates all firewall events by their action field, producing the same 933 ALLOW / 351 BLOCK result but with the ability to drill down further using Splunk's interactive interface.</p>
+
+<h3>4.3.2 Top Destination Ports</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=firewall_logs
+| stats count by dst_port, action
+| sort - count
+| head 20</pre>
+</div>
+
+<p><strong>Why this query:</strong> Grouping by both <code>dst_port</code> and <code>action</code> shows not just which ports were targeted, but whether they were allowed or blocked. This dual-axis aggregation is much faster in Splunk than the equivalent CLI pipeline of <code>grep | cut | sort | uniq -c</code>, and produces sortable, filterable results.</p>
+
+<h3>4.3.3 Lateral Movement from VPN Attacker</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=firewall_logs src_ip="10.8.0.23"
+| stats count by dst_ip, dst_port, action
+| sort - count</pre>
+</div>
+
+<p><strong>Why this query:</strong> This query maps every connection the VPN attacker (<code>10.8.0.23</code>) made to internal hosts, grouped by target, port, and whether it was allowed or blocked. The result confirmed 90 total connections targeting APP-WEB-01, WORKSTATION-60, and FINANCE-SRV1 on ports 22, 445, and 3389, with approximately two-thirds allowed.</p>
+
+<h3>4.3.4 Allowed Metasploit Traffic</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=firewall_logs
+    action="ALLOW" dst_port=4444
+| table _time, src_ip, dst_ip, dst_port, action
+| sort _time</pre>
+</div>
+
+<p><strong>Why this query:</strong> Combining <code>action="ALLOW"</code> with <code>dst_port=4444</code> finds every instance where the firewall permitted Metasploit traffic. This is the smoking gun for firewall misconfiguration — port 4444 should never be allowed. The <code>table</code> command with <code>sort _time</code> produces a chronological view ideal for timeline construction.</p>
+
+<h3>4.3.5 Outbound C2 from WORKSTATION-60</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=firewall_logs src_ip="10.0.0.60"
+| stats count by dst_ip, dst_port, action
+| sort - count</pre>
+</div>
+
+<p><strong>Why this query:</strong> Analyzing all outbound traffic from WORKSTATION-60 reveals the scope of compromise. A healthy workstation should have diverse outbound traffic to many destinations. The result showed <strong>80 events, all to <code>198.51.100.77:4444</code></strong> — 98.2% of all outbound traffic went to the attacker's C2 server.</p>
+
+<h3>4.3.6 Outbound from APP-WEB-01</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=firewall_logs src_ip="10.0.0.51"
+| stats count by dst_ip, dst_port, action
+| sort - count</pre>
+</div>
+
+<p><strong>Why this query:</strong> Similar to the WORKSTATION-60 analysis, this reveals APP-WEB-01's communication patterns. The result showed <strong>60 events to <code>198.51.100.77:80</code> (32) and <code>198.51.100.77:8080</code> (28)</strong> — the exfiltration channel using standard HTTP ports to blend with normal web traffic.</p>
+
+<h3>4.3.7 Most Blocked External IPs</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=firewall_logs action="BLOCK"
+| eval src_octet=mvindex(split(src_ip, "."), 0)
+| where src_octet!="10"
+| stats count by src_ip
+| sort - count
+| head 10</pre>
+</div>
+
+<p><strong>Why this query:</strong> This query uses <code>eval</code> with <code>mvindex(split())</code> to extract the first octet of the source IP, then filters out internal IPs (starting with 10). The result confirmed <code>203.0.113.45</code> (279 blocks) and <code>203.0.113.10</code> (46 blocks) as the most aggressively blocked external IPs.</p>
+
+<h2 id="sec4-4" class="page-break">4.4 Phase 9 &mdash; VPN Log Investigation in Splunk</h2>
+
+<p>The VPN logs in Splunk required field extraction because the <code>username</code> and <code>result</code> fields were present in the raw JSON but not automatically extracted. This phase demonstrates the critical skill of adapting queries when initial attempts fail due to field naming differences.</p>
+
+<h3>4.4.1 Validating VPN Field Extraction</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=vpn_logs
+| fieldsummary
+| table field, count, distinct_count
+| head 20</pre>
+</div>
+
+<p><strong>Why this query:</strong> When initial queries using <code>user="svc_backup"</code> returned no results, <code>fieldsummary</code> revealed that the field was actually named <code>username</code> and the action field was <code>result</code> (not <code>action</code>). This troubleshooting step is essential in real-world SIEM environments where field extraction may not match assumptions.</p>
+
+<h3>4.4.2 Counting svc_backup Brute Force</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=vpn_logs username="svc_backup"
+| stats count by result
+| sort - count</pre>
+</div>
+
+<p><strong>Why this query:</strong> With the correct field name <code>username</code> identified, this query aggregates all <code>svc_backup</code> events by <code>result</code> (SUCCESS/FAIL). The result of <strong>118 FAIL and 17 SUCCESS</strong> perfectly matched the CLI analysis and confirmed the brute force pattern.</p>
+
+<h3>4.4.3 Brute Force Timeline</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=vpn_logs
+    username="svc_backup" result="FAIL"
+| bucket _time span=1m
+| stats count by _time
+| sort _time</pre>
+</div>
+
+<p><strong>Why this query:</strong> <code>bucket _time span=1m</code> groups events into one-minute buckets, producing a minute-by-minute view of the brute force attack. This is the Splunk equivalent of the CLI timeline analysis but produces data ready for visualization with <code>timechart</code>.</p>
+
+<h3>4.4.4 SUCCESS Logins with Assigned IP</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=vpn_logs
+    username="svc_backup" result="SUCCESS"
+| table _time, src_ip, username, result, assigned_ip
+| sort _time</pre>
+</div>
+
+<p><strong>Why this query:</strong> Filtering to only SUCCESS results and displaying the <code>assigned_ip</code> field shows which VPN client IP was assigned after each successful authentication. The results confirmed <code>assigned_ip=10.8.0.23</code> at 02:19:40 on September 3.</p>
+
+<h3>4.4.5 Compromised Accounts from Attacker IP</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=vpn_logs src_ip="203.0.113.45"
+| stats count by username, result
+| sort - count</pre>
+</div>
+
+<p><strong>Why this query:</strong> Aggregating by <code>username</code> and <code>result</code> for the primary attacker IP reveals the full scope of credential compromise. The result showed <code>alice</code> (9 SUCCESS), <code>bob</code> (6), <code>jsmith</code> (5), and <code>svc_backup</code> (5 SUCCESS + 118 FAIL), proving all four accounts were compromised.</p>
+
+<h3>4.4.6 Who Was Assigned 10.8.0.23</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs sourcetype=vpn_logs assigned_ip="10.8.0.23"
+| table _time, src_ip, username, result, assigned_ip
+| sort _time</pre>
+</div>
+
+<p><strong>Why this query:</strong> This query traces which accounts received the VPN-CLIENT-ATTK IP address, linking the VPN authentication to the subsequent lateral movement. The results showed <code>svc_backup</code> on September 3 and <code>bob</code> on September 4.</p>
+
+<h2 id="sec4-5" class="page-break">4.5 Phase 10 &mdash; Cross-Source Correlation in Splunk</h2>
+
+<p>The final and most powerful phase of the Splunk investigation joins all three sourcetypes to build a unified view of the attack timeline. Cross-source correlation is where SIEMs demonstrate their value over isolated log analysis.</p>
+
+<h3>4.5.1 Complete Attack Timeline</h3>
+
+<div class="command-box">
+<div class="command-title">Splunk Query</div>
+<pre>index=network_logs
+   (sourcetype=firewall_logs
+      (src_ip="10.8.0.23" OR src_ip="10.0.0.60" OR src_ip="10.0.0.51"))
+   OR (sourcetype=ids_logs
+      (src_ip="10.0.0.60" OR src_ip="10.0.0.51" OR src_ip="10.8.0.23"))
+   OR (sourcetype=vpn_logs assigned_ip="10.8.0.23")
+| eval phase=case(
+   sourcetype="vpn_logs" AND result="SUCCESS",
+       "1-Initial_Access",
+   sourcetype="firewall_logs" AND src_ip="10.8.0.23",
+       "2-Lateral_Scan",
+   sourcetype="ids_logs" AND match(alert, "C2"),
+       "3-C2_Beaconing",
+   sourcetype="ids_logs"
+       AND match(classification, "Exfiltration"),
+       "4-Exfiltration",
+   sourcetype="firewall_logs"
+       AND src_ip="10.0.0.60" AND dst_ip="198.51.100.77",
+       "3-C2_Beaconing",
+   sourcetype="firewall_logs"
+       AND src_ip="10.0.0.51" AND dst_ip="198.51.100.77",
+       "4-Exfiltration",
+   1=1, "Other"
+)
+| stats count by phase
+| eval percentage=round((count/1284)*100, 1)."%"
+| sort phase</pre>
+</div>
+
+<p><strong>Why this query:</strong> This is the crown jewel of the investigation. It uses <code>OR</code> logic across all three sourcetypes to select events related to the attack, then uses <code>eval case()</code> to classify each event into an attack phase. The <code>stats</code> command aggregates events by phase, and the <code>eval</code> command calculates the percentage of each phase relative to total firewall events (1,284). This produces a summary table showing the distribution of Initial Access, Lateral Scan, C2 Beaconing, and Data Exfiltration across the incident timeline.</p>
+
+<div class="result-box">
+<div class="result-title">Results</div>
+<table>
+<thead><tr><th>Phase</th><th>Events</th><th>Percentage</th></tr></thead>
+<tbody>
+<tr><td>1-Initial_Access</td><td>3</td><td>0.2%</td></tr>
+<tr><td>2-Lateral_Scan</td><td>90</td><td>7.0%</td></tr>
+<tr><td>3-C2_Beaconing</td><td>160</td><td>12.5%</td></tr>
+<tr><td>4-Exfiltration</td><td>120</td><td>9.3%</td></tr>
+<tr><td>Other</td><td>90</td><td>7.0%</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>463</strong></td><td><strong>36.0%</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ===== SECTION 5: KEY FINDINGS ===== -->
+<h1 id="sec5" class="page-break">5. Key Findings &amp; Evidence Summary</h1>
+
+<h3>Finding 1: Perimeter Breach Confirmed on Day 1</h3>
+<p>The attacker had valid VPN credentials for at least four accounts (<code>alice</code>, <code>bob</code>, <code>svc_backup</code>, <code>jsmith</code>) starting August 25, 2025. The first successful VPN login from attacker IP <code>203.0.113.45</code> occurred at 08:25:10 on August 25. The "new firewall and IDS" deployment did not cause the breach — it merely provided visibility into an already-compromised environment.</p>
+
+<h3>Finding 2: Service Account Brute Force Successful</h3>
+<p>On September 3, 2025, the attacker conducted an automated brute force against <code>svc_backup</code>, making 118 failed attempts at 10-second intervals over 19 minutes before succeeding. No account lockout policy was in place. After success, <code>svc_backup</code> was assigned VPN IP <code>10.8.0.23</code>.</p>
+
+<h3>Finding 3: Lateral Movement Across Three Critical Hosts</h3>
+<p>On September 5, 2025, the VPN attacker (<code>10.8.0.23</code>) conducted a 15-hour internal network scan targeting APP-WEB-01, WORKSTATION-60, and FINANCE-SRV1 on ports 22 (SSH), 445 (SMB), and 3389 (RDP). Of 90 total connection attempts, approximately 67% were ALLOWED by the firewall.</p>
+
+<h3>Finding 4: Persistent C2 for 20 Days</h3>
+<p>Starting September 11, 2025, WORKSTATION-60 established 80 reverse shell beacons to <code>198.51.100.77:4444</code>, occurring every 6 hours with clockwork precision. The IDS correctly identified each beacon as <code>ET TROJAN Possible C2 Beaconing</code> with Priority 1 classification. The firewall allowed all 80 outbound C2 connections.</p>
+
+<h3>Finding 5: Data Exfiltration Confirmed</h3>
+<p>Beginning September 27, 2025, APP-WEB-01 initiated 60 HTTP POST uploads to <code>198.51.100.77:80</code> (32) and <code>198.51.100.77:8080</code> (28). The IDS explicitly classified this traffic as <code>Potential Data Exfiltration</code> via the <code>ET INFO Possible HTTP POST Large Upload</code> signature.</p>
+
+<h3>Finding 6: No Remediation Performed</h3>
+<p>The final C2 beacon occurred on September 30, 2025 at 19:00:00 — the exact moment the logs ended. No detection, containment, or remediation actions were taken during the entire 37-day incident window. The attacker maintained uninterrupted access throughout.</p>
+
+<!-- ===== SECTION 6: MITRE ATT&CK ===== -->
+<h1 id="sec6" class="page-break">6. MITRE ATT&amp;CK Mapping</h1>
+
+<table>
+<thead>
+<tr><th>Tactic</th><th>Technique ID</th><th>Technique Name</th><th>Evidence</th></tr>
+</thead>
+<tbody>
+<tr><td>Initial Access</td><td>T1133</td><td>External Remote Services</td><td>VPN abuse via compromised credentials</td></tr>
+<tr><td>Initial Access</td><td>T1078</td><td>Valid Accounts</td><td>Stolen alice, bob, svc_backup, jsmith</td></tr>
+<tr><td>Credential Access</td><td>T1110</td><td>Brute Force</td><td>118 svc_backup fails in 19 minutes</td></tr>
+<tr><td>Execution</td><td>T1059</td><td>Command and Scripting Interpreter</td><td>Reverse shell on port 4444</td></tr>
+<tr><td>Persistence</td><td>T1053</td><td>Scheduled Task/Job</td><td>Every 6-hour beaconing pattern</td></tr>
+<tr><td>Discovery</td><td>T1046</td><td>Network Service Scanning</td><td>Sep 5 internal scan from 10.8.0.23</td></tr>
+<tr><td>Lateral Movement</td><td>T1021.001</td><td>Remote Desktop Protocol</td><td>RDP brute force to 3389</td></tr>
+<tr><td>Lateral Movement</td><td>T1021.002</td><td>SMB/Windows Admin Shares</td><td>SMB lateral movement to 445</td></tr>
+<tr><td>Lateral Movement</td><td>T1021.004</td><td>SSH</td><td>SSH scans to port 22</td></tr>
+<tr><td>C2</td><td>T1071.001</td><td>Application Layer Protocol: Web</td><td>HTTP C2 on ports 80/8080</td></tr>
+<tr><td>C2</td><td>T1571</td><td>Non-Standard Port</td><td>C2 over port 4444 (Metasploit)</td></tr>
+<tr><td>Exfiltration</td><td>T1041</td><td>Exfiltration Over C2 Channel</td><td>HTTP POST Large Upload</td></tr>
+<tr><td>Exfiltration</td><td>T1030</td><td>Data Transfer Size Limits</td><td>Large uploads detected</td></tr>
+<tr><td>Defense Evasion</td><td>T1001.001</td><td>Data Obfuscation: Junk Data</td><td>Sequential source ports per beacon</td></tr>
+</tbody>
+</table>
+
+<!-- ===== SECTION 7: ROOT CAUSE ===== -->
+<h1 id="sec7" class="page-break">7. Root Cause Analysis</h1>
+
+<table>
+<thead>
+<tr><th>Control</th><th>Status</th><th>Failure Impact</th></tr>
+</thead>
+<tbody>
+<tr><td>Account Lockout Policy</td><td>Missing</td><td>118 brute force attempts succeeded</td></tr>
+<tr><td>MFA on VPN</td><td>Missing</td><td>Compromised password = instant access</td></tr>
+<tr><td>Geo-IP Restrictions</td><td>Missing</td><td>Attacker rotated IPs freely</td></tr>
+<tr><td>Egress Filtering</td><td>Missing</td><td>C2 traffic outbound on 4444, 80, 8080</td></tr>
+<tr><td>Network Segmentation</td><td>Missing</td><td>VPN clients reached internal LAN directly</td></tr>
+<tr><td>IDS Alert Triage</td><td>Failed</td><td>80 Priority 1 alerts ignored for 20 days</td></tr>
+<tr><td>Service Account Governance</td><td>Missing</td><td>svc_backup had VPN access</td></tr>
+<tr><td>Firewall Policy</td><td>Misconfigured</td><td>72.7% allow rate, port 4444 open</td></tr>
+<tr><td>Log Correlation</td><td>Missing</td><td>VPN + firewall + IDS never cross-referenced</td></tr>
+<tr><td>Password Policy</td><td>Weak</td><td>svc_backup cracked in under 20 minutes</td></tr>
+</tbody>
+</table>
+
+<h3>Why the SOC Missed the Attack</h3>
+<ol>
+<li><strong>Alert fatigue:</strong> The IDS generated hundreds of low-priority "Possible Benign Scan" alerts (Priority 3) that drowned out the signal.</li>
+<li><strong>Buried Priority 1 alerts:</strong> The C2 beaconing alerts (Priority 1) started on September 11, but by then the SOC was already desensitized by weeks of scan noise.</li>
+<li><strong>No correlation:</strong> The firewall, IDS, and VPN logs were never cross-referenced. No one connected August 25 reconnaissance to September 5 lateral movement to September 11 C2.</li>
+<li><strong>Misconfigured priorities:</strong> Early reconnaissance was labeled "Possible Benign Scan" with Priority 3, when it should have been Priority 1 or 2.</li>
+</ol>
+
+<!-- ===== SECTION 8: RECOMMENDATIONS ===== -->
+<h1 id="sec8" class="page-break">8. Recommendations &amp; Detection Rules</h1>
+
+<h2 id="sec8-1">8.1 Immediate Actions</h2>
+
+<table>
+<thead><tr><th>Priority</th><th>Action</th><th>Owner</th></tr></thead>
+<tbody>
+<tr><td>P0</td><td>Disable svc_backup, alice, bob, jsmith accounts</td><td>Identity Team</td></tr>
+<tr><td>P0</td><td>Block 198.51.100.77 at perimeter firewall</td><td>Network Team</td></tr>
+<tr><td>P0</td><td>Isolate WORKSTATION-60 and APP-WEB-01</td><td>SOC / IR</td></tr>
+<tr><td>P1</td><td>Force password reset for all VPN users</td><td>Identity Team</td></tr>
+<tr><td>P1</td><td>Review financial data on APP-WEB-01 and FINANCE-SRV1</td><td>Data Owners</td></tr>
+<tr><td>P1</td><td>Capture memory dumps from compromised hosts</td><td>Forensics Team</td></tr>
+<tr><td>P2</td><td>Implement account lockout (5 fails = 30 min lockout)</td><td>Identity Team</td></tr>
+<tr><td>P2</td><td>Enforce MFA on all VPN accounts</td><td>Security Team</td></tr>
+<tr><td>P2</td><td>Add geo-IP restrictions for VPN access</td><td>Network Team</td></tr>
+<tr><td>P2</td><td>Deploy egress filtering (block outbound 4444, etc.)</td><td>Network Team</td></tr>
+<tr><td>P2</td><td>Segment VPN client pool from internal LAN</td><td>Network Team</td></tr>
+<tr><td>P2</td><td>Remove VPN access from all service accounts</td><td>Identity Team</td></tr>
+<tr><td>P2</td><td>Deploy EDR on all endpoints</td><td>Security Team</td></tr>
+</tbody>
+</table>
+
+<h2 id="sec8-2">8.2 Splunk Detection Rules</h2>
+
+<h3>Rule 1: C2 Beaconing Detection</h3>
+<div class="command-box">
+<div class="command-title">Saved Search</div>
+<pre>index=network_logs sourcetype=ids_logs
+    (alert="*C2 Beaconing*" OR alert="*Trojan*")
+    priority=1
+| stats count by src_ip, dst_ip, dst_port
+| where count > 3
+| eval severity="critical",
+     message="Active C2 from ".src_ip." to ".dst_ip.":".dst_port
+| table src_ip, dst_ip, dst_port, count, severity, message</pre>
+</div>
+<p><strong>Schedule:</strong> Run every hour. Alert if <code>count > 0</code>.</p>
+
+<h3>Rule 2: Data Exfiltration Detection</h3>
+<div class="command-box">
+<div class="command-title">Saved Search</div>
+<pre>index=network_logs sourcetype=ids_logs
+    classification="*Exfiltration*"
+| stats sum(bytes) as total_bytes, count as events
+    by src_ip, dst_ip
+| eval total_MB=round(total_bytes/1024/1024, 2)
+| where total_MB > 10
+| table src_ip, dst_ip, total_MB, events</pre>
+</div>
+<p><strong>Schedule:</strong> Run every 30 minutes. Alert if <code>total_MB > 10</code>.</p>
+
+<h3>Rule 3: VPN Brute Force Detection</h3>
+<div class="command-box">
+<div class="command-title">Saved Search</div>
+<pre>index=network_logs sourcetype=vpn_logs result="FAIL"
+| bucket _time span=15m
+| stats count by _time, username, src_ip
+| where count > 10
+| eval alert="VPN Brute Force: ".username." from ".src_ip
+| table _time, username, src_ip, count, alert</pre>
+</div>
+<p><strong>Schedule:</strong> Run every 15 minutes. Alert if <code>count > 10</code>.</p>
+
+<h3>Rule 4: Lateral Movement from VPN Pool</h3>
+<div class="command-box">
+<div class="command-title">Saved Search</div>
+<pre>index=network_logs sourcetype=firewall_logs
+    match(src_ip, "^10\.8\.0\.")
+    (dst_port=22 OR dst_port=445 OR dst_port=3389)
+| bucket _time span=1h
+| stats dc(dst_ip) as unique_targets,
+     dc(dst_port) as unique_ports, count
+    by _time, src_ip
+| where unique_targets > 2 AND unique_ports > 2
+| eval alert="Lateral scan from VPN: ".src_ip
+| table _time, src_ip, unique_targets, unique_ports, count, alert</pre>
+</div>
+<p><strong>Schedule:</strong> Run every hour. Alert if <code>unique_targets > 2</code>.</p>
+
+<h3>Rule 5: Compromised Account Detection</h3>
+<div class="command-box">
+<div class="command-title">Saved Search</div>
+<pre>index=network_logs sourcetype=vpn_logs result="SUCCESS"
+| stats dc(src_ip) as unique_ips, count by username
+| where unique_ips > 2
+| eval alert="Account ".username." from ".unique_ips." IPs"
+| table username, unique_ips, count, alert</pre>
+</div>
+<p><strong>Schedule:</strong> Run daily. Alert if <code>unique_ips > 2</code>.</p>
+
+<!-- ===== SECTION 9: APPENDIX ===== -->
+<h1 id="sec9" class="page-break">9. Appendix: Command &amp; Query Reference</h1>
+
+<h2 id="sec9-1">9.1 CLI Command Reference</h2>
+
+<table>
+<thead><tr><th>Investigation Step</th><th>Command</th></tr></thead>
+<tbody>
+<tr><td>View firewall head</td><td><code>cat firewall.log | head -n 20</code></td></tr>
+<tr><td>Count firewall events</td><td><code>cat firewall.log | wc -l</code></td></tr>
+<tr><td>View firewall tail</td><td><code>cat firewall.log | tail -n 20</code></td></tr>
+<tr><td>View IDS head</td><td><code>head ids_alerts.log</code></td></tr>
+<tr><td>Count IDS alerts</td><td><code>cat ids_alerts.log | wc -l</code></td></tr>
+<tr><td>View VPN head</td><td><code>cat vpn_auth.log | head -n 10</code></td></tr>
+<tr><td>Count VPN events</td><td><code>cat vpn_auth.log | wc -l</code></td></tr>
+<tr><td>Find port 4444 in IDS</td><td><code>grep "4444" ids_alerts.log</code></td></tr>
+<tr><td>Find 10.8.0.23 in VPN</td><td><code>grep "10.8.0.23" vpn_auth.log</code></td></tr>
+<tr><td>Top blocked IPs</td><td><code>cat firewall.log | grep "BLOCK" | cut -d' ' -f5 | cut -d: -f1 | sort -nr | uniq -c</code></td></tr>
+<tr><td>Allowed from attacker IP</td><td><code>cat firewall.log | grep 203.0.113.45 | grep "ALLOW" | head</code></td></tr>
+<tr><td>IDS alerts for 10.8.0.23</td><td><code>grep "10.8.0.23" ids_alerts.log | head</code></td></tr>
+<tr><td>Find C2 alerts</td><td><code>cat ids_alerts.log | grep C2 | head</code></td></tr>
+<tr><td>IDS alerts for WORKSTATION-60</td><td><code>cat ids_alerts.log | grep -n 10.0.0.60 | cut -d' ' -f6,7,8,9,10,19,22,23 | head</code></td></tr>
+<tr><td>Unique IDS alerts for 10.0.0.60</td><td><code>cat ids_alerts.log | grep -n 10.0.0.60 | cut -d' ' -f6,7,8,9,10,19,22,23 | uniq -c | sort -nr | head</code></td></tr>
+<tr><td>IDS alerts for FINANCE-SRV1</td><td><code>cat ids_alerts.log | grep -n 10.0.0.20 | cut -d' ' -f6,7,8,9,10,19,22,23 | uniq -c | sort -nr | head</code></td></tr>
+<tr><td>IDS alerts for APP-WEB-01</td><td><code>cat ids_alerts.log | grep -n 10.0.0.51 | cut -d' ' -f6,7,8,9,10,19,22,23 | uniq -c | sort -nr | head</code></td></tr>
+<tr><td>IDS alerts for VPN-GW</td><td><code>cat ids_alerts.log | grep -n 10.0.0.50 | cut -d' ' -f6,7,8,9,10,19,22,23 | uniq -c | sort -nr | head</code></td></tr>
+<tr><td>IDS alerts for 10.8.0.23</td><td><code>cat ids_alerts.log | grep -n 10.8.0.23 | cut -d' ' -f6,7,8,9,10,19,22,23 | uniq -c | sort -nr | head</code></td></tr>
+<tr><td>Unique flows for WORKSTATION-60</td><td><code>cat firewall.log | grep 10.0.0.60 | cut -d' ' -f5,6,7 | uniq | sort</code></td></tr>
+<tr><td>Find svc_backup in VPN</td><td><code>grep "svc_backup" vpn_auth.log</code></td></tr>
+<tr><td>Brute force timeline</td><td><code>grep "2025-09-03" vpn_auth.log | grep -i "success\|fail"</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="sec9-2">9.2 Splunk SPL Query Reference</h2>
+
+<table>
+<thead><tr><th>Purpose</th><th>Splunk Query</th></tr></thead>
+<tbody>
+<tr><td>List sourcetypes</td><td><code>index=network_logs | stats count by sourcetype</code></td></tr>
+<tr><td>Check date range</td><td><code>index=network_logs | eval date=strftime(_time, "%Y-%m-%d") | stats count by date, sourcetype</code></td></tr>
+<tr><td>Field summary (IDS)</td><td><code>index=network_logs sourcetype=ids_logs | fieldsummary | table field, count</code></td></tr>
+<tr><td>C2 beaconing alerts</td><td><code>index=network_logs sourcetype=ids_logs alert="*C2 Beaconing*" | table _time, src_ip, dst_ip, dst_port</code></td></tr>
+<tr><td>C2 bytes analysis</td><td><code>index=network_logs sourcetype=ids_logs alert="*C2 Beaconing*" | stats count, sum(bytes) by src_ip, dst_ip</code></td></tr>
+<tr><td>Exfiltration alerts</td><td><code>index=network_logs sourcetype=ids_logs classification="*Exfiltration*" | table _time, src_ip, dst_ip, dst_port</code></td></tr>
+<tr><td>Exfiltration volume</td><td><code>index=network_logs sourcetype=ids_logs alert="*HTTP POST Large*" | stats sum(bytes), count by src_ip, dst_ip</code></td></tr>
+<tr><td>Lateral movement (IDS)</td><td><code>index=network_logs sourcetype=ids_logs src_ip="10.8.0.23" | table _time, alert, dst_ip, dst_port</code></td></tr>
+<tr><td>Lateral movement summary</td><td><code>index=network_logs sourcetype=ids_logs src_ip="10.8.0.23" | stats count by alert, dst_ip, dst_port</code></td></tr>
+<tr><td>VPN brute force count</td><td><code>index=network_logs sourcetype=vpn_logs username="svc_backup" | stats count by result</code></td></tr>
+<tr><td>VPN brute force timeline</td><td><code>index=network_logs sourcetype=vpn_logs username="svc_backup" result="FAIL" | bucket _time span=1m | stats count by _time</code></td></tr>
+<tr><td>VPN SUCCESS with IP</td><td><code>index=network_logs sourcetype=vpn_logs username="svc_backup" result="SUCCESS" | table _time, assigned_ip</code></td></tr>
+<tr><td>Compromised accounts</td><td><code>index=network_logs sourcetype=vpn_logs src_ip="203.0.113.45" | stats count by username, result</code></td></tr>
+<tr><td>Who got 10.8.0.23</td><td><code>index=network_logs sourcetype=vpn_logs assigned_ip="10.8.0.23" | table _time, username, result</code></td></tr>
+<tr><td>Firewall ALLOW/BLOCK</td><td><code>index=network_logs sourcetype=firewall_logs | stats count by action</code></td></tr>
+<tr><td>Firewall top ports</td><td><code>index=network_logs sourcetype=firewall_logs | stats count by dst_port, action | sort - count</code></td></tr>
+<tr><td>Lateral scan (firewall)</td><td><code>index=network_logs sourcetype=firewall_logs src_ip="10.8.0.23" | stats count by dst_ip, dst_port, action</code></td></tr>
+<tr><td>Allowed port 4444</td><td><code>index=network_logs sourcetype=firewall_logs action="ALLOW" dst_port=4444 | table _time, src_ip, dst_ip</code></td></tr>
+<tr><td>Outbound from WORKSTATION-60</td><td><code>index=network_logs sourcetype=firewall_logs src_ip="10.0.0.60" | stats count by dst_ip, dst_port, action</code></td></tr>
+<tr><td>Outbound from APP-WEB-01</td><td><code>index=network_logs sourcetype=firewall_logs src_ip="10.0.0.51" | stats count by dst_ip, dst_port, action</code></td></tr>
+<tr><td>Blocked external IPs</td><td><code>index=network_logs sourcetype=firewall_logs action="BLOCK" | eval octet=mvindex(split(src_ip, "."), 0) | where octet!="10" | stats count by src_ip</code></td></tr>
+<tr><td>Kill chain timeline</td><td><code>index=network_logs | eval phase=case(match(alert, "C2"), "C2", match(classification, "Exfiltration"), "Exfiltration", 1=1, "Other") | timechart span=1h count by phase</code></td></tr>
+<tr><td>Executive summary</td><td><code>index=network_logs | eval cat=case(match(alert, "C2"), "C2", match(classification, "Exfiltration"), "Exfiltration", match(alert, "Lateral"), "Lateral", 1=1, "Other") | stats count, sum(bytes) by cat</code></td></tr>
+</tbody>
+</table>
+
+<!-- ===== REFERENCES ===== -->
+<h1 class="page-break">References</h1>
+
+<ol class="references" style="padding-left: 2em;">
+<li id="ref-1">NIST. (2020). <i>Security and Privacy Controls for Information Systems and Organizations</i>, NIST Special Publication 800-53 Rev. 5, Control SC-7(5) &mdash; Deny by Default / Allow by Exception. <a href="https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final">https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final</a></li>
+
+<li id="ref-2">PCI Security Standards Council. (2022). <i>Payment Card Industry Data Security Standard (PCI DSS) Version 4.0</i>, Requirement 1: Install and Maintain Network Security Controls. <a href="https://www.pcisecuritystandards.org/document_library">https://www.pcisecuritystandards.org/document_library</a></li>
+
+<li id="ref-3">NIST. (2009). <i>Guidelines on Firewalls and Firewall Policy: Recommendations of the National Institute of Standards and Technology</i>, NIST Special Publication 800-41 Rev. 1, Section 4.2.2 &mdash; Deny by Default. <a href="https://csrc.nist.gov/publications/detail/sp/800-41/rev-1/final">https://csrc.nist.gov/publications/detail/sp/800-41/rev-1/final</a></li>
+
+<li id="ref-4">Blumira. (2024). <i>Firewall Best Practices: A Guide to Effective Security Policies</i>. <a href="https://www.blumira.com/blog/firewall-best-practices">https://www.blumira.com/blog/firewall-best-practices</a></li>
+
+<li id="ref-5">TryHackMe. (2025). <i>Network Security Essentials</i>: Perimeter Logs &mdash; Investigating the Breach. SOC Level 1 Training. <a href="https://tryhackme.com">https://tryhackme.com</a></li>
+
+<li id="ref-6">Splunk. (2025). <i>Splunk Search Processing Language (SPL) Reference Manual</i>. <a href="https://docs.splunk.com/Documentation/SPL">https://docs.splunk.com/Documentation/SPL</a></li>
+
+<li id="ref-7">MITRE. (2025). <i>MITRE ATT&amp;CK Framework</i>, Enterprise Matrix. <a href="https://attack.mitre.org">https://attack.mitre.org</a></li>
+</ol>
+
+</body>
+</html>
