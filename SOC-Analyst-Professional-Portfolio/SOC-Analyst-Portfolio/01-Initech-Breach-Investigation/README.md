@@ -28,7 +28,31 @@ The attacker exploited stolen VPN credentials for four user accounts, conducted 
 **Bottom Line:** The perimeter was breached on Day 1 (August 25) using compromised VPN credentials. The attacker maintained active control until the logs ended on September 30. No remediation was performed during the entire month. The attack was detected but never acted upon due to alert fatigue, missing security controls, and lack of log correlation.
 
 ---
+---
 
+### 🎯 Quick Highlights & Role Fit
+
+* **Target Roles:** SOC Analyst (Tier 2 / Tier 3) | Incident Responder (DFIR) | Detection / Threat Intelligence Analyst
+* **Key Deliverables:** 
+  * Comprehensive 45-page executive & technical incident response report (`Initech-Incident-Response-Report.pdf`).
+  * 10-phase investigative runbook combining CLI parsing (`grep`, `awk`, `sed`) with advanced Splunk SPL queries.
+  * Multi-source correlation correlating OpenVPN lease pools (`10.8.0.23`), firewall session logs, and Suricata Priority 1 alerts.
+* **Investigation Footprint:** 37-day incident window (2,485 events across Firewall, IDS, and VPN auth logs) with 14 MITRE ATT&CK techniques mapped across 7 tactics.
+
+---
+
+### 🛠️ Skills Demonstrated
+
+| Domain | Implemented Technologies & Methodologies |
+| :--- | :--- |
+| **SIEM & SPL Detection** | Splunk Enterprise data parsing, field extraction, time-series analysis (`timechart`), multi-source event correlation (`eval`, `transaction`, `stats`), alert thresholding |
+| **Digital Forensics & CLI Analysis** | Deep log examination using Unix CLI text tools (`awk`, `grep`, `sort`, `uniq`), forensic timeline reconstruction, authentication sequence tracing |
+| **Network & Perimeter Defense** | Firewall rule & egress policy auditing (72.7% permissiveness analysis), port pattern detection (Metasploit default 4444, RDP 3389, SMB 445, SSH 22) |
+| **Intrusion Detection & Triage** | Suricata/Snort alert analysis, Priority 1 triage (`ET TROJAN C2 Beaconing`, `ET INFO HTTP POST Large Upload`), alert fatigue root-cause analysis |
+| **Host & Identity Auditing** | Service account security governance (`svc_backup`), password spray vs. brute-force velocity analysis (118 attempts in 19 mins), missing lockout policy evaluation |
+| **Frameworks & Governance** | MITRE ATT&CK kill-chain mapping (14 techniques across 7 tactics), security control deficit review (Zero Trust, MFA, Egress Filtering, Geo-IP) |
+
+---
 ## Investigation Phases
 
 ### Part A: Command-Line Investigation
