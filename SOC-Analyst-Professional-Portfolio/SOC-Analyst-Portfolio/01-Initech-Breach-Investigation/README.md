@@ -1,4 +1,16 @@
-# Network Perimeter Breach Investigation
+
+# Network Perimeter Breach Investigation & Forensic Analysis
+
+![Splunk](https://img.shields.io/badge/Splunk-Enterprise%20%2F%20SPL-f05a28?style=flat-square&logo=splunk&logoColor=white)
+![Suricata / Snort](https://img.shields.io/badge/IDS-ET%20Ruleset-ef3b24?style=flat-square)
+![OpenVPN](https://img.shields.io/badge/VPN-Auth%20Log%20Forensics-ea7e20?style=flat-square&logo=openvpn&logoColor=white)
+![Firewall](https://img.shields.io/badge/Firewall-Traffic%20%26%20Egress%20Audit-d94f00?style=flat-square)
+![Bash](https://img.shields.io/badge/CLI-Log%20Forensics-4EAA25?style=flat-square&logo=gnubash&logoColor=white)
+![MITRE ATT&CK](https://img.shields.io/badge/MITRE%20ATT%26CK-14%20Techniques%20Mapped-red?style=flat-square)
+
+> **Portfolio Project:** An end-to-end digital forensic investigation and root-cause analysis of a sustained 37-day network perimeter breach at a simulated financial firm (Initech Corp). Reconstructed the adversary lifecycle across 2,485 log records using both command-line parsing and Splunk SIEM correlation—identifying compromised VPN credentials, automated service account brute-forcing, internal lateral movement, Metasploit C2 persistence (port 4444), and HTTP POST data exfiltration ignored due to SOC alert fatigue.
+
+---
 
 **Organization:** Initech Corp (Simulated Financial Services Firm)  
 **Investigation Period:** 37 days (August - September 2025)  
